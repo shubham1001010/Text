@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpenGPT Q&A</title>
+  <style>/* Reset default margins and box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body, h1, input, button {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+  color: black;
+  background-color: white;
+}
+
+/* Body layout: flex column with full viewport height, hide overflow */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sticky header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+}
+
+header h1 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: black;
+}
+
+/* Chat container */
+main#chat {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem 10px; /* 10px horizontal padding for edges */
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100vw;
+  box-sizing: border-box;
+  scroll-padding-bottom: 80px; /* enough space above footer */
+  scroll-behavior: smooth;
+  /* remove any max-width or margin auto to prevent centering */
+}
+
+/* Footer sticky */
+footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+}
+
+/* Footer container flex */
+footer > div {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Input field style */
+input#question {
+  flex: 1 1 auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  color: black;
+  background-color: white;
+  font-size: 1rem;
+}
+
+input#question::placeholder {
+  color: #6b7280;
+}
+
+input#question:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px black;
+  border-color: black;
+}
+
+/* Ask button */
+button#askBtn {
+  padding: 0.75rem 1.5rem;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+button#askBtn:hover:not(:disabled) {
+  background-color: #111827;
+}
+
+button#askBtn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Loading message style */
+.loading-message {
+  color: #6b7280;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+/* Message wrapper: flex full width */
+.message-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+/* Message bubbles */
+.message-bubble {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  white-space: pre-wrap;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Bot messages aligned left, 10px margin from left edge */
+.message-bubble.bot {
+  /*background-color: #f3f4f6;*/
+  color: black;
+  align-self: flex-start;
+  margin-left: 10px;
+  margin-right: auto;
+}
+
+/* User messages aligned right, 10px margin from right edge */
+.message-bubble.user {
+  background-color: black;
+  color: white;
+  align-self: flex-end;
+  margin-right: 10px;
+  margin-left: auto;
+}
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>OpenGPT</h1>
+  </header>
+
+  <!-- Chat Area -->
+  <main id="chat">
+    <!-- Dynamic messages will appear here -->
+  </main>
+
+  <!-- Footer Input -->
+  <footer>
+    <div>
+      <input
+        id="question"
+        type="text"
+        placeholder="Ask me anything..."
+      />
+      <button id="askBtn">Ask</button>
+    </div>
+  </footer>
+
+  <!-- TensorFlow & QnA -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna@1.0.0/dist/qna.min.js"></script>
+
+  <!-- Custom Scripts -->
+  <script src="/data.js"></script>
+  <script src="/model1.js"></script>
+
+</body>
+</html>

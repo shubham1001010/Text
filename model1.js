@@ -1,8 +1,5 @@
-let model;
-
-
 // Merge all datapot lines into one context paragraph
-const context = datapot.join(' ');
+let context = datapot.join(' ');
 
 // Load the QnA model
 async function loadModel() {
@@ -21,6 +18,26 @@ async function loadModel() {
   loadingMsg.remove();
 }
 
+// Smart Wikipedia search
+async function fetchWikipediaSummary(query) {
+  try {
+    const searchRes = await fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=&format=json`);
+    const searchData = await searchRes.json();
+
+    if (searchData.query.search.length === 0) return '';
+
+    const firstTitle = searchData.query.search[0].title;
+
+    const summaryRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(firstTitle)}`);
+    const summaryData = await summaryRes.json();
+
+    return summaryData.extract || '';
+  } catch (e) {
+    console.error('Wikipedia fetch error:', e);
+    return '';
+  }
+}
+
 // Handle user question
 async function answerQuestion() {
   const input = document.getElementById('question');
@@ -34,8 +51,12 @@ async function answerQuestion() {
   // AI is thinking...
   const thinking = appendMessage('Thinking...', 'bot');
 
+  // Fetch Wikipedia content and merge with existing context
+  const wikiContent = await fetchWikipediaSummary(question);
+  const fullContext = `${context} ${wikiContent}`;
+
   // Get answer from model
-  const answers = await model.findAnswers(question, context);
+  const answers = await model.findAnswers(question, fullContext);
   thinking.remove();
 
   if (answers.length > 0) {
